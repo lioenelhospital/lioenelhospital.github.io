@@ -79,7 +79,8 @@ const locations = {
         "quirófano_urgencias", 
         "criticos", 
         "triaje",
-        "despacho" 
+        "despacho",
+        "cuarto_celadores" 
       ],
       items: [],
       characters: []
