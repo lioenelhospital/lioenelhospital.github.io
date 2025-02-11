@@ -2,145 +2,150 @@
    ESTILOS BASE (DESKTOP)
    ------------------------ */
 
-/* El body ocupa toda la ventana */
+/* Ajustamos el body para permitir scroll en caso de contenido mayor al viewport */
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #e8f4fd; /* Azul claro */
-    color: #333;
-    font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #e8f4fd; /* Azul claro */
+  color: #333;
+  font-family: 'Roboto', sans-serif;
+
+  /* Dejamos que se ajuste en altura sin forzar 100vh */
+  min-height: 100vh; 
+  width: 100%;
+  /* Permitir scroll en todo el documento si se necesita */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Contenedor principal: 
+   - Por defecto (desktop) 80% x 80%
+   - Se centra horizontalmente con margin: 0 auto
+*/
+#game-container {
+  width: 80%;
+  height: 80%;
+  margin: 20px auto;               /* Centrado horizontal y algo de margen superior e inferior */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Área de salida del juego (texto) */
+#output {
+  flex: 1; /* Se expande verticalmente */
+  overflow-y: auto;
+  background-color: #f9fbfd;
+  border: 1px solid #cce1f2;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+/* Contenedor para los controles (input + botón) */
+#controls {
+  display: flex;
+  gap: 10px;
+}
+
+/* Input de texto */
+#user-input {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #cce1f2;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Botón de enviar */
+#send-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #2196F3;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
+}
+#send-btn:hover {
+  background-color: #1976d2;
+}
+
+/* ------------------------
+   MOBILE: ANCHO < 600px
+   ------------------------ */
+@media (max-width: 600px) {
+  /* El contenedor ocupa el 100% del viewport en móviles */
+  #game-container {
     width: 100vw;
     height: 100vh;
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-    overflow: hidden; /* El scroll se maneja en #output */
-  }
-  
-  /* Contenedor principal: por defecto 80% x 80% */
-  #game-container {
-    width: 80%;
-    height: 80%;
-    display: flex;
-    flex-direction: column; 
-    box-sizing: border-box;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Área de salida del juego (texto) */
-  #output {
-    flex: 1; /* Se expande verticalmente */
-    overflow-y: auto;
-    background-color: #f9fbfd;
-    border: 1px solid #cce1f2;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 1rem;
-    line-height: 1.5;
-    padding: 15px;
-    margin-bottom: 15px;
-  }
-  
-  /* Contenedor para los controles (input + botón) */
-  #controls {
-    display: flex;
-    gap: 10px;
-  }
-  
-  /* Input de texto */
-  #user-input {
-    flex: 1;
+    margin: 0;          /* Quitamos el margin para usar todo el espacio */
+    border-radius: 0;   /* Sin esquinas redondeadas en móviles */
     padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #cce1f2;
-    border-radius: 8px;
-    box-sizing: border-box;
+    box-shadow: none; 
   }
-  
-  /* Botón de enviar */
+
+  /* Ajustes del área de salida en móviles */
+  #output {
+    font-size: 1.2rem;
+    line-height: 1.4;
+    padding: 10px;
+    margin-bottom: 10px;
+    /* Resta algo para los controles */
+    height: calc(100vh - 140px);
+  }
+
+  /* Controles más grandes en móvil */
+  #user-input, 
   #send-btn {
-    padding: 10px 20px;
+    font-size: 1.2rem;
+    padding: 10px;
+  }
+}
+
+/* ------------------------
+   MOBILE: MODO PORTRAIT 
+   (max-width: 600px + orientation: portrait)
+   ------------------------ */
+@media (max-width: 600px) and (orientation: portrait) {
+  #output {
+    /* Ajusta la altura según la orientación vertical */
     font-size: 1rem;
-    background-color: #2196F3;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: background-color 0.3s ease;
+    height: calc(100vh - 150px);
   }
-  #send-btn:hover {
-    background-color: #1976d2;
+
+  #user-input,
+  #send-btn {
+    font-size: 1rem;
   }
-  
-  /* ------------------------
-     MOBILE: ANCHO < 600px
-     ------------------------ */
-  @media (max-width: 600px) {
-    
-    /* El contenedor ocupa el 100% del viewport en móviles */
-    #game-container {
-      width: 100vw;
-      height: 100vh;
-      border-radius: 0;
-      padding: 10px;
-      box-shadow: none; 
-    }
-  
-    /* Ajustes del área de salida en móviles */
-    #output {
-      font-size: 1.2rem;
-      line-height: 1.4;
-      padding: 10px;
-      margin-bottom: 10px;
-      /* Resta algo para la barra de controles */
-      height: calc(100vh - 140px);
-    }
-  
-    /* Controles más grandes en móvil */
-    #user-input, 
-    #send-btn {
-      font-size: 1.2rem;
-      padding: 10px;
-    }
+}
+
+/* ------------------------
+   MOBILE: MODO LANDSCAPE 
+   (max-width: 900px) and (orientation: landscape)
+   ------------------------ */
+@media (max-width: 900px) and (orientation: landscape) {
+  /* Ocupar completamente la pantalla en horizontal también */
+  #game-container {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
   }
-  
-  /* ------------------------
-     MOBILE: MODO PORTRAIT 
-     (max-width: 600px + orientation: portrait)
-     ------------------------ */
-  @media (max-width: 600px) and (orientation: portrait) {
-    /* Priorizamos la lectura vertical */
-    #output {
-      font-size: 1rem;
-      height: calc(100vh - 150px); /* Ajusta el margen para la barra */
-    }
-    #user-input,
-    #send-btn {
-      font-size: 1rem;
-    }
+  #output {
+    font-size: 1rem;
+    height: calc(100vh - 120px);
   }
-  
-  /* ------------------------
-     MOBILE: MODO LANDSCAPE 
-     (max-width: 600px + orientation: landscape)
-     ------------------------ */
-  @media (max-width: 900px) and (orientation: landscape) {
-    /* En horizontal suele haber menos alto disponible */
-    #game-container {
-      width: 100vw;
-      height: 100vh;
-    }
-  
-    #output {
-      font-size: 1rem;
-      height: calc(100vh - 120px);
-    }
-    #user-input,
-    #send-btn {
-      font-size: 1rem;
-    }
+  #user-input,
+  #send-btn {
+    font-size: 1rem;
   }
-  
+}
