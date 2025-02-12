@@ -9,8 +9,7 @@ const locations = {
     lookText2: "Nada nuevo por aquí, aunque sigues viendo la botella de agua si aún no la has tomado.",
     visited: false,
     neighbors: ["hall", "pasillo"],
-    // Se agrega la botella de agua como objeto en esta localización
-    items: ["botella de agua"],
+    items: ["botella de agua", "mascarilla"],
     characters: []
   },
   "hall": {
@@ -20,7 +19,7 @@ const locations = {
     lookText2: "Mismas caras de apuro, nada nuevo en el Hall.",
     visited: false,
     neighbors: ["cuarto_celadores", "sala_espera", "pasillo", "zona_ambulancias"],
-    items: ["silla"],
+    items: ["silla", "bala"],
     characters: []
   },
   "sala_espera": {
@@ -45,7 +44,7 @@ const locations = {
   },
   "car": {
     name: "CAR",
-    arrivalText: "Llegas al CAR, el control de acceso con su puerta de radiofrecuencia.",
+    arrivalText: "Llegas al CAR, el control de acceso con su puerta de radiofrecuencia y la silla. Allí se encuentra Marta.",
     lookText: "Una mesa con un viejo monitor y la puerta automática que se abre con mando. Nadie quiere este puesto.",
     lookText2: "Nada ha cambiado: sigue siendo el lugar menos apetecible.",
     visited: false,
@@ -70,19 +69,19 @@ const locations = {
     lookText2: "Misma imagen de estrés y bullicio. Nada destacable adicional.",
     visited: false,
     neighbors: [
-      "hall", 
-      "sala_espera", 
-      "boxes", 
-      "sala_observacion", 
-      "rx", 
-      "trauma", 
-      "quirófano_urgencias", 
-      "criticos", 
+      "hall",
+      "sala_espera",
+      "boxes",
+      "sala_observacion",
+      "rx",
+      "trauma",
+      "quirofano_urgencias",
+      "criticos",
       "triaje",
       "despacho",
-      "cuarto_celadores" 
+      "cuarto_celadores"
     ],
-    items: [],
+    items: ["cama"],
     characters: []
   },
   "despacho": {
@@ -92,7 +91,7 @@ const locations = {
     lookText2: "Todo sigue igual de tenso y ordenado.",
     visited: false,
     neighbors: ["pasillo"],
-    items: [],
+    items: ["llave_lenceria"],
     characters: []
   },
   "boxes": {
@@ -132,18 +131,18 @@ const locations = {
     lookText2: "Continúa la actividad frenética, pero sin novedades destacables.",
     visited: false,
     neighbors: ["pasillo"],
-    items: [],
+    items: ["bisturi"],
     characters: []
   },
-  "quirófano_urgencias": {
+  "quirofano_urgencias": {
     name: "Quirófano de Urgencias",
-    arrivalText: "Entras en un quirófano preparado para emergencias inmediatas.",
+    arrivalText: "Entras en un quirófano preparado para emergencias inmediatas. Allí está la Dra. Valeria preparando unos informes",
     lookText: "El instrumental brilla bajo la luz blanca, y el equipo quirúrgico se mueve con precisión.",
-    lookText2: "La misma sensación de tensión y profesionalidad.",
+    lookText2: "La misma sensación de tensión y profesionalidad: con mascarilla, gorro y bata.",
     visited: false,
     neighbors: ["pasillo"],
     items: [],
-    characters: []
+    characters: ["cirujana"]
   },
   "criticos": {
     name: "Críticos",
@@ -152,7 +151,7 @@ const locations = {
     lookText2: "Igual de sobrecargado, sin cambios visibles.",
     visited: false,
     neighbors: ["pasillo"],
-    items: [],
+    items: ["bala"],
     characters: []
   },
   "triaje": {
@@ -228,7 +227,7 @@ function typeHTML(htmlString, destination, speed = 20, callback = null) {
           i++;
           setTimeout(typeChar, speed);
         } else {
-          done(); 
+          done();
         }
       }
       typeChar();
@@ -359,7 +358,7 @@ function triggerSupervisoraEvent() {
 function triggerAmbulanciaEvent() {
   // Solo se activa si storyState=0 y no hemos definido ambulanciaChoice
   if (gameState.storyState !== 0 || gameState.ambulanciaChoice) return;
-  
+
   let choice = Math.random() < 0.5 ? "silla" : "camilla";
   gameState.ambulanciaChoice = choice;
   if (choice === "silla") {
@@ -487,7 +486,7 @@ function processCommand(command) {
     }
 
     if (dest === "despacho" && !gameState.supervisoraTriggerDone) {
-      addNarrativeOutput("El despacho está cerrado con llave... Hasta que no veas a la supervisora, no puedes entrar.");
+      addNarrativeOutput("El despacho está cerrado con llave... Hasta que no veas a la supervisora, no puedes entrar. Ten cuidado anda por ahí... ");
       return;
     }
 
@@ -564,21 +563,66 @@ function processCommand(command) {
       return;
     }
 
-    // Caso: medico en sala_observacion
+    // Si ya se está en medio de una conversación con la cirujana, procesamos la respuesta
+    if (gameState.currentConversation === "cirujana") {
+      if (command === "sí" || command === "si") {
+        addNarrativeOutput(
+          "La Dra. Valeria sonríe y dice: '¡Perfecto! Me encantaría invitarte a cenar para discutirlo con calma. Nos vemos después de la guardia.'"
+        );
+        gameState.currentConversation = null;
+        return;
+      } else if (command === "no") {
+        addNarrativeOutput(
+          "La Dra. Valeria frunce el ceño y responde: 'Bueno, cada quien tiene su opinión. Seguiré con mi turno, pero piensa en lo que te dije.'"
+        );
+        gameState.currentConversation = null;
+        return;
+      } else {
+        addNarrativeOutput("La Dra. Valeria insiste: 'Responde con 'sí' o 'no', por favor.'");
+        return;
+      }
+    }
+
+    // Caso: conversación con la cirujana en el quirófano de urgencias
+    if (person === "cirujana" && gameState.currentLocation === "quirofano_urgencias") {
+      if (!gameState.cirujanaConversationDone) {
+        gameState.cirujanaConversationDone = true;
+        gameState.currentConversation = "cirujana";
+        addNarrativeOutput(
+          "La cirujana, la Dra. Valeria, se te acerca con aire preocupado y dice: " +
+          "'He notado que el ritmo del quirófano anda descompasado últimamente. ¿Crees que deberíamos replantear la coordinación del equipo para mejorar la eficiencia? " +
+          "Responde con 'sí' o 'no'.'"
+        );
+      } else {
+        addNarrativeOutput(
+          "La Dra. Valeria te mira con una sonrisa nostálgica y comenta: " +
+          "'Ya conversamos sobre este tema. Recuerda, la coordinación es esencial en situaciones críticas.'"
+        );
+      }
+      return;
+    }
+
+    // Caso: conversación con el médico en la sala de observación (manteniendo el comportamiento previo)
     if (person === "medico" && gameState.currentLocation === "sala_observacion") {
       if (gameState.storyState < 2) {
-        addNarrativeOutput("El médico te ignora, enfrascado en su programa. Parece que aún no has completado lo anterior.");
+        addNarrativeOutput("El médico te ignora, enfrascado en su programa de televisión favorito. Parece que aún no has completado lo anterior.");
       } else if (gameState.storyState === 2) {
         gameState.storyState = 3;
-        addNarrativeOutput("El médico te saluda: 'Gracias por gestionar todo en Triaje. Menuda noche...' <br>Te comenta que pareces cansado y con sed, deberías volver al Cuarto de Celadores.");
+        addNarrativeOutput("El médico te saluda: 'Gracias por gestionar todo en Triaje. Menuda noche...'<br> " +
+          "'Mira estos de la \"Isla del Vicio\" como monos chingones, ¿Qué te parece?' <br><br>" +
+          " :/ (tu cara de sorpresa)<br><br>" +
+          "Te comenta que pareces cansado y con sed, deberías volver al Cuarto de Celadores.");
       } else if (gameState.storyState >= 3) {
-        addNarrativeOutput("El médico ya te ha dado su consejo... Ve a beber agua si no lo has hecho todavía.");
+        addNarrativeOutput("El médico ya te ha dado su consejo... Ve a beber agua si no lo has hecho todavía, le estás interrumpiendo su programa.");
       }
-    } else {
-      addNarrativeOutput(`Hablas con ${person}, pero no sucede nada especial.`);
+      return;
     }
+
+    // Caso por defecto para otros personajes
+    addNarrativeOutput(`Hablas con ${person}, pero no sucede nada especial.`);
     return;
   }
+
 
   // 8) Comando "tomar agua" o "beber agua" (Evento final)
   if (command === "tomar agua" || command === "beber agua") {

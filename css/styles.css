@@ -36,9 +36,9 @@
   
   #header img {
     width: 100%; /* Ocupar todo el ancho */
-    height: 101px; /* Altura fija */
+    height: 137px; /* Altura fija */
     object-fit: cover; /* Recortar sin deformar */
-    object-position: center 25%; /* Ajustar el recorte */
+    object-position: center 43%; /* Ajustar el recorte */
     border-radius: 8px;
     display: block;
   }
@@ -96,7 +96,7 @@
   #send-btn {
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: #2196F3;
+    background-color: #30b3e7;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -106,7 +106,8 @@
   }
   
   #send-btn:hover {
-    background-color: #1976d2;
+    background-color: #19a7d275;
+    color: #0b455c;
   }
   
 /* ------------------------
