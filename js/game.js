@@ -554,73 +554,77 @@ function processCommand(command) {
     return;
   }
 
-  // 7) Comando "hablar con X"
-  if (command.startsWith("hablar con ")) {
-    let person = command.substring(11).trim();
-    let loc = locations[gameState.currentLocation];
-    if (!loc.characters.includes(person)) {
-      addNarrativeOutput(`No ves a ${person} aquí.`);
-      return;
-    }
-
-    // Si ya se está en medio de una conversación con la cirujana, procesamos la respuesta
-    if (gameState.currentConversation === "cirujana") {
-      if (command === "sí" || command === "si") {
-        addNarrativeOutput(
-          "La Dra. Valeria sonríe y dice: '¡Perfecto! Me encantaría invitarte a cenar para discutirlo con calma. Nos vemos después de la guardia.'"
-        );
-        gameState.currentConversation = null;
-        return;
-      } else if (command === "no") {
-        addNarrativeOutput(
-          "La Dra. Valeria frunce el ceño y responde: 'Bueno, cada quien tiene su opinión. Seguiré con mi turno, pero piensa en lo que te dije.'"
-        );
-        gameState.currentConversation = null;
-        return;
-      } else {
-        addNarrativeOutput("La Dra. Valeria insiste: 'Responde con 'sí' o 'no', por favor.'");
-        return;
-      }
-    }
-
-    // Caso: conversación con la cirujana en el quirófano de urgencias
-    if (person === "cirujana" && gameState.currentLocation === "quirofano_urgencias") {
-      if (!gameState.cirujanaConversationDone) {
-        gameState.cirujanaConversationDone = true;
-        gameState.currentConversation = "cirujana";
-        addNarrativeOutput(
-          "La cirujana, la Dra. Valeria, se te acerca con aire preocupado y dice: " +
-          "'He notado que el ritmo del quirófano anda descompasado últimamente. ¿Crees que deberíamos replantear la coordinación del equipo para mejorar la eficiencia? " +
-          "Responde con 'sí' o 'no'.'"
-        );
-      } else {
-        addNarrativeOutput(
-          "La Dra. Valeria te mira con una sonrisa nostálgica y comenta: " +
-          "'Ya conversamos sobre este tema. Recuerda, la coordinación es esencial en situaciones críticas.'"
-        );
-      }
-      return;
-    }
-
-    // Caso: conversación con el médico en la sala de observación (manteniendo el comportamiento previo)
-    if (person === "medico" && gameState.currentLocation === "sala_observacion") {
-      if (gameState.storyState < 2) {
-        addNarrativeOutput("El médico te ignora, enfrascado en su programa de televisión favorito. Parece que aún no has completado lo anterior.");
-      } else if (gameState.storyState === 2) {
-        gameState.storyState = 3;
-        addNarrativeOutput("El médico te saluda: 'Gracias por gestionar todo en Triaje. Menuda noche...'<br> " +
-          "'Mira estos de la \"Isla del Vicio\" como monos chingones, ¿Qué te parece?' <br><br>" +
-          " :/ (tu cara de sorpresa)<br><br>" +
-          "Te comenta que pareces cansado y con sed, deberías volver al Cuarto de Celadores.");
-      } else if (gameState.storyState >= 3) {
-        addNarrativeOutput("El médico ya te ha dado su consejo... Ve a beber agua si no lo has hecho todavía, le estás interrumpiendo su programa.");
-      }
-      return;
-    }
-
-    // Caso por defecto para otros personajes
-    addNarrativeOutput(`Hablas con ${person}, pero no sucede nada especial.`);
+// 7) Comando "hablar con X"
+if (command.startsWith("hablar con ")) {
+  let person = command.substring(11).trim();
+  let loc = locations[gameState.currentLocation];
+  
+  // Si no hay al personaje en la localización, se informa
+  if (!loc.characters.includes(person)) {
+    addNarrativeOutput(`No ves a ${person} aquí.`);
     return;
+  }
+  
+  // Caso: conversación con la cirujana en el quirófano de urgencias
+  if (person === "cirujana" && gameState.currentLocation === "quirofano_urgencias") {
+    if (!gameState.cirujanaConversationDone) {
+      gameState.cirujanaConversationDone = true;
+      gameState.currentConversation = "cirujana";  // Inicia la conversación
+      addNarrativeOutput(
+        "La cirujana, la Dra. Valeria, se te acerca con aire preocupado y dice: " +
+        "'He notado que el ritmo del quirófano anda descompasado últimamente. ¿Crees que deberíamos replantear la coordinación del equipo para mejorar la eficiencia? " +
+        "Responde con 'sí' o 'no'.'"
+      );
+    } else {
+      addNarrativeOutput(
+        "La Dra. Valeria te mira con una sonrisa nostálgica y comenta: " +
+        "'Ya conversamos sobre este tema. Recuerda, la coordinación es esencial en situaciones críticas.'"
+      );
+    }
+    return;
+  }
+  
+  // Caso: conversación con el médico en la sala de observación (comportamiento ya implementado)
+  if (person === "medico" && gameState.currentLocation === "sala_observacion") {
+    if (gameState.storyState < 2) {
+      addNarrativeOutput("El médico te ignora, enfrascado en su programa de televisión favorito. Parece que aún no has completado lo anterior.");
+    } else if (gameState.storyState === 2) {
+      gameState.storyState = 3;
+      addNarrativeOutput(
+        "El médico te saluda: 'Gracias por gestionar todo en Triaje. Menuda noche...'<br>" +
+        "'Mira estos de la \"Isla del Vicio\" como monos chingones, ¿Qué te parece?' <br><br>" +
+        " :/ (tu cara de sorpresa)<br><br>" +
+        "Te comenta que pareces cansado y con sed, deberías volver al Cuarto de Celadores."
+      );
+    } else if (gameState.storyState >= 3) {
+      addNarrativeOutput("El médico ya te ha dado su consejo... Ve a beber agua si no lo has hecho todavía, le estás interrumpiendo su programa.");
+    }
+    return;
+  }
+  
+  // Caso por defecto para otros personajes
+  addNarrativeOutput(`Hablas con ${person}, pero no sucede nada especial.`);
+  return;
+}
+
+  // Si ya se está en medio de una conversación (por ejemplo, con la cirujana)
+  if (gameState.currentConversation === "cirujana") {
+    if (command === "sí" || command === "si") {
+      addNarrativeOutput(
+        "La Dra. Valeria sonríe y dice: '¡Perfecto! Me encantaría invitarte a cenar para discutirlo con calma. Nos vemos después de la guardia.'"
+      );
+      gameState.currentConversation = null; // Termina la conversación
+      return;
+    } else if (command === "no") {
+      addNarrativeOutput(
+        "La Dra. Valeria frunce el ceño y responde: 'Bueno, cada quien tiene su opinión. Seguiré con mi turno, pero piensa en lo que te dije.'"
+      );
+      gameState.currentConversation = null; // Termina la conversación
+      return;
+    } else {
+      addNarrativeOutput("La Dra. Valeria insiste: 'Responde con 'sí' o 'no', por favor.'");
+      return;
+    }
   }
 
 
