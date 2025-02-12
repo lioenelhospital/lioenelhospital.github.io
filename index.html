@@ -1,25 +1,71 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Lío en el Hospital - Aventura Extensa</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
 
+  <head>
+    <meta charset="UTF-8">
+    <title>Lío en el Hospital - Aventura Extensa</title>
 
-</head>
+    <!-- ✅ Configuración de responsive y compatibilidad -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- ✅ Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+    <!-- ✅ Metadatos SEO -->
+    <meta name="description"
+      content="Lío en el Hospital es una aventura conversacional ambientada en un entorno hospitalario. Escribe comandos como en los 90 y vive la historia.">
+    <meta name="author" content="Tu Nombre">
+    <meta name="keywords" content="aventura conversacional, juego de texto, hospital, rol, historia interactiva">
+
+    <!-- ✅ Open Graph (para compartir en redes como Facebook) -->
+    <meta property="og:title" content="Lío en el Hospital - Aventura Extensa">
+    <meta property="og:description"
+      content="Una aventura interactiva en un hospital random cualquiera. Escribe comandos y vive la historia.">
+    <meta property="og:image" content="/images/hospital_banner.png">
+    <meta property="og:url" content="https://lioenelhospital.github.io">
+    <meta property="og:type" content="website">
+
+    <!-- ✅ Twitter Card (para mejorar previews en Twitter/X) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lío en el Hospital - Aventura Extensa">
+    <meta name="twitter:description"
+      content="Una aventura interactiva en urgencias. Escribe comandos y vive la historia.">
+    <meta name="twitter:image" content="/images/hospital_banner.png">
+    <meta name="twitter:creator" content="@TuTwitter">
+
+    <!-- ✅ PWA: Configuración de tema en móviles -->
+    <meta name="theme-color" content="#2196F3">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ✅ Precarga de la fuente para mejorar carga inicial -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- ✅ CSS Principal -->
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+
 <body>
   <div id="game-container">
-    <div id="output">
-      <p>Bienvenido a 'Lío en el Hospital'.</p>
-      <p>Si en cualquier momento necesitas ayuda, escribe <strong>"ayuda"</strong> para conocer los comandos disponibles.</p>
-    </div>
+    <!-- Encabezado decorativo para la versión desktop -->
+    <header id="header">
+      <img src="/images/hospital_banner.png" alt="Banner Hospital" />
+      <h1>Lío en el Hospital <span class="emoji">🏥</span></h1>
+    </header>
+
+    <!-- Área principal de salida del juego -->
+    <div id="output"></div>
+
+    <!-- Controles: input + botón -->
     <div id="controls">
       <input type="text" id="user-input" placeholder="Escribe tu comando aquí">
-      <button id="send-btn">Enviar</button>
+      <button id="send-btn">Enviar 🚑</button>
     </div>
   </div>
   <script src="/js/game.js"></script>
 </body>
+
 </html>
